@@ -1,0 +1,33 @@
+pipeline{
+    agent any
+    tools{
+        nodejs "node"
+    }
+    stages{
+        stage('Clone Repo'){
+            steps{
+                git 'https://github.com/Emmanuel-9/gallery-1.git'
+            }
+        }
+        stage('Build'){
+            steps{
+                sh 'npm install'
+            }
+        }
+        stage('Test'){
+            steps{
+                sh 'npm test'
+            }
+        }
+        stage('Deploy to Heroku'){
+            steps{
+                withCredentials([usernameColonPassword(credentialsId:'heroku', variable:'HEROKU_CREDENTIALS')]){
+                    sh 'git push https://${HEROKU_CREDENTIALS}@git.heroku.com/enigmatic-mesa-94173.gitmaster'
+                }
+            }
+        }
+         
+    }
+    
+}
+
